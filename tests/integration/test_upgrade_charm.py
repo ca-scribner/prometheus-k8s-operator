@@ -2,7 +2,6 @@
 # Copyright 2022 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-import asyncio
 import logging
 
 import pytest
@@ -15,8 +14,8 @@ from helpers import (
     oci_image,
     run_promql,
 )
-from .juju import Juju
 
+from .juju import Juju
 
 logger = logging.getLogger(__name__)
 

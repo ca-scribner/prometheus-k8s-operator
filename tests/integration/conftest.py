@@ -8,7 +8,7 @@ import shutil
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-import os
+
 import pytest
 
 logger = logging.getLogger(__name__)

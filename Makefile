@@ -1,9 +1,14 @@
 PROJECT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+LIB := $(PROJECT)lib
 SRC := $(PROJECT)src
 TESTS := $(PROJECT)tests
 ALL := $(SRC) $(TESTS)
 
+# TODO: This applies to everything below, which is great when running tests via `make X`.  
+#       If someone tries to copy/paste the `uv run ...` commands though, they'll get an
+#       error saying they can't find charm files.  Do we care?
+# export PYTHONPATH = $(PROJECT):$(PROJECT)/lib:$(SRC):$(TESTS)
 export PYTHONPATH = $(PROJECT):$(PROJECT)/lib:$(SRC)
 
 # Update uv.lock, including upgrading/downgrading existing dependencies and adding new ones
@@ -53,9 +58,11 @@ static-lib:
 
 unit: EXTRA_DEPENDENCIES = --extra unit
 unit:
+	uv run python -m doctest $(SRC)/charm.py
+	stat cos-tool-amd64 > /dev/null 2>&1 || curl -L -O https://github.com/canonical/cos-tool/releases/latest/download/cos-tool-amd64
 	uv run $(EXTRA_DEPENDENCIES) \
 		coverage run \
-		--source=$(SRC) \
+		--source=$(SRC),$(LIB) \
 		-m pytest \
 		$(TESTS)/unit \
 		--tb native \
@@ -63,6 +70,20 @@ unit:
 		-s \
 		$(ARGS)
 	uv run $(EXTRA_DEPENDENCIES) coverage report
+
+unit-old: EXTRA_DEPENDENCIES = --extra unit
+unit-old:
+	uv run $(EXTRA_DEPENDENCIES) \
+		coverage run \
+		--source=$(SRC),$(LIB) \
+		-m pytest \
+		$(TESTS)/unit \
+		--tb native \
+		-v \
+		-s \
+		$(ARGS)
+	uv run $(EXTRA_DEPENDENCIES) coverage report
+
 
 scenario: EXTRA_DEPENDENCIES = --extra scenario
 scenario:

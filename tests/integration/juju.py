@@ -74,8 +74,7 @@ class Juju:
                     results.extend(cls._unit_statuses(a))
                 if set(results) != {"active/idle"}:
                     raise Exception
-                else:
-                    break
+                break
             except Exception:
                 time.sleep(1)
 

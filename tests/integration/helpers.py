@@ -13,7 +13,6 @@ from lightkube import Client
 from lightkube.resources.core_v1 import Pod
 from pytest_operator.plugin import OpsTest
 from workload import Prometheus
-from .juju import Juju
 
 log = logging.getLogger(__name__)
 
